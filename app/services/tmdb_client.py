@@ -55,3 +55,19 @@ class TMDBClient:
 
     def get_top_rated(self) -> dict:
         return self._get('/movie/top_rated')
+
+    def get_genres(self) -> dict:
+        return self._get('/genre/movie/list')
+
+    def discover_movies(
+        self,
+        genre_id: int | None = None,
+        year: int | None = None,
+        page: int = 1,
+    ) -> dict:
+        params: dict = {'page': page, 'sort_by': 'popularity.desc'}
+        if genre_id:
+            params['with_genres'] = genre_id
+        if year:
+            params['primary_release_year'] = year
+        return self._get('/discover/movie', params)

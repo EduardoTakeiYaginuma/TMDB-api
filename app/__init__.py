@@ -1,20 +1,25 @@
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_caching import Cache
 from flask_cors import CORS
 
 db = SQLAlchemy()
+cache = Cache()
 
 
-def create_app() -> Flask:
+def create_app(test_config: dict | None = None) -> Flask:
     app = Flask(__name__)
 
     from app.config.settings import Config
     app.config.from_object(Config)
+    if test_config:
+        app.config.update(test_config)
 
     _ensure_db_dir(app.config['SQLALCHEMY_DATABASE_URI'])
 
     db.init_app(app)
+    cache.init_app(app)
     CORS(app, origins=app.config.get('CORS_ORIGINS', ['http://localhost:3000']))
 
     from app.routes import register_routes

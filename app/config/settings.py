@@ -22,3 +22,6 @@ class Config:
         'http://localhost:3000',
         'http://frontend:3000',
     ]
+
+    CACHE_TYPE: str = 'SimpleCache'
+    CACHE_DEFAULT_TIMEOUT: int = 600

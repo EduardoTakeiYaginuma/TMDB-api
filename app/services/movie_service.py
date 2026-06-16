@@ -21,6 +21,7 @@ def _normalize_summary(raw: dict) -> dict[str, Any]:
         'release_date': raw.get('release_date') or None,
         'vote_average': raw.get('vote_average'),
         'overview': raw.get('overview') or '',
+        'genre_ids': raw.get('genre_ids', []),
     }
 
 
@@ -55,6 +56,24 @@ class MovieService:
     def get_top_rated(self) -> list[dict]:
         raw = self._client.get_top_rated()
         return [_normalize_summary(m) for m in raw.get('results', [])]
+
+    def get_genres(self) -> list[dict]:
+        raw = self._client.get_genres()
+        return raw.get('genres', [])
+
+    def discover(
+        self,
+        genre_id: int | None = None,
+        year: int | None = None,
+        page: int = 1,
+    ) -> dict[str, Any]:
+        raw = self._client.discover_movies(genre_id, year, page)
+        return {
+            'results': [_normalize_summary(m) for m in raw.get('results', [])],
+            'page': raw.get('page', 1),
+            'total_pages': raw.get('total_pages', 1),
+            'total_results': raw.get('total_results', 0),
+        }
 
     def get_detail(self, tmdb_movie_id: int) -> dict[str, Any]:
         raw = self._client.get_movie_with_credits(tmdb_movie_id)
