@@ -7,7 +7,10 @@ def register_routes(app: Flask) -> None:
         return jsonify({'status': 'ok', 'message': 'CineRate API is running'})
 
     from app.controllers.movie_controller import bp as movies_bp
+    from app.controllers.rating_controller import bp as ratings_bp
+
     app.register_blueprint(movies_bp)
+    app.register_blueprint(ratings_bp)
 
     @app.errorhandler(404)
     def not_found(_):
