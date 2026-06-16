@@ -1,0 +1,34 @@
+import os
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+
+db = SQLAlchemy()
+
+
+def create_app() -> Flask:
+    app = Flask(__name__)
+
+    from app.config.settings import Config
+    app.config.from_object(Config)
+
+    _ensure_db_dir(app.config['SQLALCHEMY_DATABASE_URI'])
+
+    db.init_app(app)
+    CORS(app, origins=app.config.get('CORS_ORIGINS', ['http://localhost:3000']))
+
+    from app.routes import register_routes
+    register_routes(app)
+
+    with app.app_context():
+        db.create_all()
+
+    return app
+
+
+def _ensure_db_dir(uri: str) -> None:
+    if uri.startswith('sqlite:///'):
+        path = uri.replace('sqlite:///', '')
+        directory = os.path.dirname(path)
+        if directory:
+            os.makedirs(directory, exist_ok=True)
