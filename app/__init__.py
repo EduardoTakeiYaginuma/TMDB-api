@@ -3,9 +3,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_caching import Cache
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 
 db = SQLAlchemy()
 cache = Cache()
+jwt = JWTManager()
 
 
 def create_app(test_config: dict | None = None) -> Flask:
@@ -20,6 +22,7 @@ def create_app(test_config: dict | None = None) -> Flask:
 
     db.init_app(app)
     cache.init_app(app)
+    jwt.init_app(app)
     CORS(app, origins=app.config.get('CORS_ORIGINS', ['http://localhost:3000']))
 
     from app.routes import register_routes

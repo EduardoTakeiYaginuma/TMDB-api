@@ -8,9 +8,13 @@ def _utcnow() -> datetime:
 
 class MovieRating(db.Model):
     __tablename__ = 'movie_ratings'
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'tmdb_movie_id', name='uq_user_movie'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
-    tmdb_movie_id = db.Column(db.Integer, unique=True, nullable=False, index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    tmdb_movie_id = db.Column(db.Integer, nullable=False, index=True)
     title = db.Column(db.String(500), nullable=False)
     poster_path = db.Column(db.String(500), nullable=True)
     rating = db.Column(db.Integer, nullable=False)
@@ -18,4 +22,4 @@ class MovieRating(db.Model):
     updated_at = db.Column(db.DateTime, default=_utcnow, onupdate=_utcnow, nullable=False)
 
     def __repr__(self) -> str:
-        return f'<MovieRating tmdb={self.tmdb_movie_id} rating={self.rating}/5>'
+        return f'<MovieRating user={self.user_id} tmdb={self.tmdb_movie_id} rating={self.rating}/5>'

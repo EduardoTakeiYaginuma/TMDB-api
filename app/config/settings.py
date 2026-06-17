@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -6,6 +7,8 @@ load_dotenv()
 
 class Config:
     SECRET_KEY: str = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
+    JWT_SECRET_KEY: str = os.environ.get('JWT_SECRET_KEY', os.environ.get('SECRET_KEY', 'dev-jwt-secret'))
+    JWT_ACCESS_TOKEN_EXPIRES: timedelta = timedelta(days=7)
 
     SQLALCHEMY_DATABASE_URI: str = os.environ.get(
         'DATABASE_URL',

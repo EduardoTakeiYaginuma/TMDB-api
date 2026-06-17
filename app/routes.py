@@ -8,9 +8,11 @@ def register_routes(app: Flask) -> None:
 
     from app.controllers.movie_controller import bp as movies_bp
     from app.controllers.rating_controller import bp as ratings_bp
+    from app.controllers.auth_controller import bp as auth_bp
 
     app.register_blueprint(movies_bp)
     app.register_blueprint(ratings_bp)
+    app.register_blueprint(auth_bp)
 
     @app.errorhandler(404)
     def not_found(_):
